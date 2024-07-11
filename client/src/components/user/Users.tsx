@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "./UserModal";
 import EditForm from "./EditForm";
 import AddForm from "./AddForm";
-
 type User = {
   id: number;
   name: string;
@@ -140,14 +139,14 @@ function Users() {
       {/* View Modal */}
       {selectedUser && !isEditModalOpen && (
         <Modal isOpen={true} onClose={closeEditModal}>
-          <div className="p-4">
-            <h2 className="text-lg font-semibold mb-4">View Details</h2>
+          <div className="p-10">
+            <h4 className="text-2xl font-semibold mb-4">Details</h4>
             <div>
-              <p>
-                <strong>Name:</strong> {selectedUser.name}
+              <p className="mb-2">
+                <span className="font-medium">Name:</span> {selectedUser.name}
               </p>
               <p>
-                <strong>Email:</strong> {selectedUser.email}
+                <span className="font-medium">Email:</span> {selectedUser.email}
               </p>
             </div>
           </div>
