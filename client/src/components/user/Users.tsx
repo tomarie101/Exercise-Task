@@ -86,56 +86,57 @@ function Users() {
   };
 
   return (
-    <div className="users-container">
-      <div className="table-container">
-        <table className="min-w-full bg-white">
-          <thead className="bg-light">
-            {/* Add Button */}
-            <div className="mt-4 mr-4 right 50%">
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Add User
-              </button>
-            </div>
-            <tr>
-              <th className="px-6 py-3 text-left">Name</th>
-              <th className="px-6 py-3 text-left">Email</th>
-              <th className="px-6 py-3 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td className="py-2 px-6">{user.name}</td>
-                <td className="py-2 px-6">{user.email}</td>
-                <td className="py-2 px-6 space-x-2">
-                  <button
-                    onClick={() => fetchUserByIdForView(user.id)}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    View
-                  </button>
-                  <button
-                    onClick={() => fetchUserByIdForEdit(user.id)}
-                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteUserById(user.id)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
+    <div className="users-container flex flex-col items-center">
+      <div className="w-full max-w-4xl">
+        {/* Add Button */}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Add User
+          </button>
+        </div>
+        <div className="table-container mt-4 overflow-x-auto">
+          <table className="min-w-full bg-white">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-6 py-3 text-left">Name</th>
+                <th className="px-6 py-3 text-left">Email</th>
+                <th className="px-6 py-3 text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td className="py-2 px-6">{user.name}</td>
+                  <td className="py-2 px-6">{user.email}</td>
+                  <td className="py-2 px-6 space-x-2">
+                    <button
+                      onClick={() => fetchUserByIdForView(user.id)}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() => fetchUserByIdForEdit(user.id)}
+                      className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteUserById(user.id)}
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-
       {/* View Modal */}
       {selectedUser && !isEditModalOpen && (
         <Modal isOpen={true} onClose={closeEditModal}>
