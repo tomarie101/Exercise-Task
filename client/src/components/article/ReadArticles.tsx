@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-// Define Article type
+// Define the Article type for TypeScript
 type Article = {
   id: number;
   title: string;
@@ -11,7 +11,53 @@ type Article = {
   updatedAt: string;
 };
 
-function ReadArticles({ article }: { article: Article }) {
+// Main component to display all articles
+function Articles() {
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  // Fetch all articles on component
+  useEffect(() => {
+    axios
+      .get<Article[]>("http://localhost:3001/api/articles")
+      .then((response) => setArticles(response.data))
+      .catch((error) => console.error("Error fetching articles:", error));
+  }, []);
+
+  return (
+    <div className="container mx-auto py-8">
+      {articles.map((article) => (
+        <ReadArticles key={article.id} article={article} />
+      ))}
+    </div>
+  );
+}
+
+// Function to add a new article
+export function createArticle(newArticle: Article) {
+  axios
+    .post("http://localhost:3001/api/articles", newArticle)
+    .then((response) => console.log("Article created:", response.data))
+    .catch((error) => console.error("Error creating article:", error));
+}
+
+// Function to update an existing article by ID
+export function updateArticle(articleId: number, updatedArticle: Article) {
+  axios
+    .put(`http://localhost:3001/api/articles/${articleId}`, updatedArticle)
+    .then((response) => console.log("Article updated:", response.data))
+    .catch((error) => console.error("Error updating article:", error));
+}
+
+// Function to delete an article by ID
+export function deleteArticle(articleId: number) {
+  axios
+    .delete(`http://localhost:3001/api/articles/${articleId}`)
+    .then(() => console.log("Article deleted"))
+    .catch((error) => console.error("Error deleting article:", error));
+}
+
+// Component to display a single article
+export function ReadArticles({ article }: { article: Article }) {
   return (
     <div className="max-w-xl mx-auto my-4 bg-white rounded-lg shadow-md overflow-hidden">
       <div className="p-6">
@@ -29,26 +75,6 @@ function ReadArticles({ article }: { article: Article }) {
           Created at: {new Date(article.createdAt).toLocaleString()}
         </div>
       </div>
-    </div>
-  );
-}
-
-function Articles() {
-  const [articles, setArticles] = useState<Article[]>([]);
-
-  useEffect(() => {
-    // Fetch articles data from an API
-    axios
-      .get<Article[]>("http://localhost:3001/api/articles")
-      .then((response) => setArticles(response.data))
-      .catch((error) => console.error("Error fetching articles:", error));
-  }, []);
-
-  return (
-    <div className="container mx-auto py-8">
-      {articles.map((article) => (
-        <ReadArticles key={article.id} article={article} />
-      ))}
     </div>
   );
 }

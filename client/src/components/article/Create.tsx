@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 
+// Function to create an article
 async function createArticle(articleData) {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/articles`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(articleData),
-    });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    const article = await response.json();
-    console.log("Article created:", article);
-    return article; // Return the created article
+    const response = await axios.post(
+      "http://localhost:3001/api/articles",
+      articleData,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    if (response.status !== 201) throw new Error("Failed to create article");
+    console.log("Article created:", response.data);
+    return response.data;
   } catch (error) {
     console.error("Error creating article:", error);
-    throw error; // Rethrow to handle it in the component
+    throw error;
   }
 }
 
@@ -32,17 +31,17 @@ function Create() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setArticleData({ ...articleData, [name]: value });
+    setArticleData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await createArticle(articleData);
-      setShowModal(false); // Close modal after submission
-      setArticleData({ title: "", content: "", author: "" }); // Reset form
+      setShowModal(false);
+      setArticleData({ title: "", content: "", author: "" });
       setFeedback("Article created successfully!");
-    } catch (error) {
+    } catch {
       setFeedback("Failed to create article. Please try again.");
     }
   };
@@ -65,7 +64,32 @@ function Create() {
             <h2 className="text-lg font-bold mb-4">Create Article</h2>
             {feedback && <p>{feedback}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Form fields remain unchanged */}
+              <input
+                type="text"
+                name="title"
+                value={articleData.title}
+                onChange={handleInputChange}
+                className="block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 mt-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                required
+                placeholder="Title"
+              />
+              <textarea
+                name="content"
+                value={articleData.content}
+                onChange={handleInputChange}
+                className="block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 mt-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                required
+                placeholder="Content"
+              />
+              <input
+                type="text"
+                name="author"
+                value={articleData.author}
+                onChange={handleInputChange}
+                className="block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 mt-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                required
+                placeholder="Author"
+              />
               <div className="flex justify-between">
                 <button
                   type="submit"

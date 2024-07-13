@@ -8,7 +8,7 @@ type ModalProps = {
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   useEffect(() => {
-    const modal = document.getElementById("user") as HTMLDialogElement;
+    const modal = document.getElementById("view") as HTMLDialogElement;
     if (isOpen) {
       modal.showModal();
     } else {
@@ -17,7 +17,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   }, [isOpen]);
 
   return (
-    <dialog id="user" className="modal" onClose={onClose}>
+    <dialog id="view" className="modal" onClose={onClose}>
       <div className="modal-box p-6 rounded-lg shadow-lg">
         {children}
         <div className="modal-action">

@@ -172,7 +172,7 @@ function Users() {
       {isAddModalOpen && (
         <Modal isOpen={isAddModalOpen} onClose={closeAddModal}>
           <div className="p-4">
-            <h2 className="text-lg font-semibold mb-4">Add User</h2>
+            <h2 className="text-lg font-semibold mb-4"></h2>
             <AddForm onClose={closeAddModal} onAdd={handleAddUser} />
           </div>
         </Modal>
