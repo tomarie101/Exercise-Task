@@ -1,5 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+
+// Simplified and polished version of the Create component and createArticle function
 
 // Function to create an article
 async function createArticle(articleData) {
