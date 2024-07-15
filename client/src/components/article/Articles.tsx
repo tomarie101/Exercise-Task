@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Pagination from "./Pagination";
 
 // Define the Article type for TypeScript
 type Article = {
@@ -21,6 +22,8 @@ function Articles() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(6);
 
   useEffect(() => {
     axios
@@ -28,6 +31,14 @@ function Articles() {
       .then((response) => setArticles(response.data))
       .catch((error) => console.error("Error fetching articles:", error));
   }, []);
+
+  // Get the current posts
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentArticles = articles.slice(indexOfFirstPost, indexOfLastPost);
+
+  // Change pages
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleCreate = (
     articleData: Omit<Article, "id" | "createdAt" | "updatedAt">
@@ -108,7 +119,7 @@ function Articles() {
         </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {articles.map((article) => (
+        {currentArticles.map((article) => (
           <div
             key={article.id}
             className="max-w-xl mx-auto bg-white rounded-lg shadow-md overflow-hidden"
@@ -147,7 +158,11 @@ function Articles() {
           </div>
         ))}
       </div>
-
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={articles.length}
+        paginate={paginate}
+      />
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">

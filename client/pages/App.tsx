@@ -12,11 +12,8 @@ function App() {
     <div>
       <Navbar />
       <Home />
-      {/* <Route path="/" element={<ReadArticles />} /> */}
-      {/* <Create /> */}
       <Articles />
       <Users />
-      {/* <Articles /> */}
     </div>
   );
 }

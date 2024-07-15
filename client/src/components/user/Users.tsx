@@ -3,6 +3,8 @@ import axios from "axios";
 import Modal from "./UserModal";
 import EditForm from "./EditForm";
 import AddForm from "./AddForm";
+import Pagination from "../article/Pagination";
+
 type User = {
   id: number;
   name: string;
@@ -14,6 +16,8 @@ function Users() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(6);
 
   // Fetch users
   useEffect(() => {
@@ -28,6 +32,14 @@ function Users() {
 
     fetchUsers();
   }, []);
+
+  // Get the current users
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   // Fetch user by ID for viewing
   const fetchUserByIdForView = async (id: number) => {
@@ -107,7 +119,7 @@ function Users() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {currentUsers.map((user) => (
                 <tr key={user.id}>
                   <td className="py-2 px-6">{user.name}</td>
                   <td className="py-2 px-6">{user.email}</td>
@@ -137,6 +149,12 @@ function Users() {
           </table>
         </div>
       </div>
+      <Pagination
+        postsPerPage={usersPerPage}
+        totalPosts={users.length}
+        paginate={paginate}
+      />
+
       {/* View Modal */}
       {selectedUser && !isEditModalOpen && (
         <Modal isOpen={true} onClose={closeEditModal}>
@@ -172,7 +190,7 @@ function Users() {
       {isAddModalOpen && (
         <Modal isOpen={isAddModalOpen} onClose={closeAddModal}>
           <div className="p-4">
-            <h2 className="text-lg font-semibold mb-4"></h2>
+            <h2 className="text-lg font-semibold mb-4">Add User</h2>
             <AddForm onClose={closeAddModal} onAdd={handleAddUser} />
           </div>
         </Modal>
