@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "./Pagination";
+import ArticleLikes from "./ArticleLikes";
 
-// Define the Article type for TypeScript
 type Article = {
   id: number;
   title: string;
@@ -10,20 +10,23 @@ type Article = {
   author: string;
   createdAt: string;
   updatedAt: string;
+  likes: number;
 };
 
-// Main component to display all articles
 function Articles() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [newArticle, setNewArticle] = useState({
     title: "",
     content: "",
     author: "",
+    likes: 0, // Initialize likes with a default value
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(6);
+
+  const { handleLike } = ArticleLikes();
 
   useEffect(() => {
     axios
@@ -32,12 +35,10 @@ function Articles() {
       .catch((error) => console.error("Error fetching articles:", error));
   }, []);
 
-  // Get the current posts
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentArticles = articles.slice(indexOfFirstPost, indexOfLastPost);
 
-  // Change pages
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleCreate = (
@@ -70,7 +71,7 @@ function Articles() {
     } else {
       handleCreate(newArticle);
     }
-    setNewArticle({ title: "", content: "", author: "" });
+    setNewArticle({ title: "", content: "", author: "", likes: 0 });
     setIsModalOpen(false);
     setEditingArticle(null);
   };
@@ -83,9 +84,10 @@ function Articles() {
         title: article.title,
         content: article.content,
         author: article.author,
+        likes: article.likes,
       });
     } else {
-      setNewArticle({ title: "", content: "", author: "" });
+      setNewArticle({ title: "", content: "", author: "", likes: 0 });
       setEditingArticle(null);
     }
   };
@@ -106,7 +108,6 @@ function Articles() {
       })
       .catch((error) => console.error("Error deleting article:", error));
   };
-
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-4">
@@ -140,19 +141,29 @@ function Articles() {
               <div className="mt-4 text-gray-500 text-sm">
                 Created at: {new Date(article.createdAt).toLocaleString()}
               </div>
-              <div className="flex justify-end mt-4 space-x-2">
-                <button
-                  onClick={() => openModal(article)}
-                  className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(article.id)}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                >
-                  Delete
-                </button>
+              <div className="flex justify-between items-center mt-4">
+                <div>
+                  <button
+                    onClick={() => openModal(article)}
+                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(article.id)}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2"
+                  >
+                    Delete
+                  </button>
+                </div>
+                <div>
+                  <button
+                    onClick={() => handleLike(article.id, setArticles)}
+                    className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded"
+                  >
+                    Like ({article.likes})
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -14,15 +14,37 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String    @unique
+  likes    Like[]
+  articles Article[]
 }
-model Article{
-  id Int @id @default(autoincrement())
-  title String
-  content String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author String
+
+model Article {
+  id           Int      @id @default(autoincrement())
+  title        String
+  content      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  authorId     Int
+  author       User     @relation(fields: [authorId], references: [id])
+  likes        Like[]   @relation("ArticleLikes")
+  dislikes     Like[]   @relation("ArticleDislikes")
+  likeCount    Int      @default(0)
+  dislikeCount Int      @default(0)
+  Like         Like[]
+}
+
+model Like {
+  id        Int     @id @default(autoincrement())
+  articleId Int
+  userId    Int
+  isLike    Boolean @default(true)
+  article   Article @relation(fields: [articleId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+  Article   Article @relation(fields: [articleId], references: [id])
+  Article   Article @relation(fields: [articleId], references: [id])
+
+  @@unique([articleId, userId])
 }

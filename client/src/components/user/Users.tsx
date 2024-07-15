@@ -17,7 +17,7 @@ function Users() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(6);
+  const [usersPerPage] = useState(10);
 
   // Fetch users
   useEffect(() => {
