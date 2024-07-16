@@ -13,6 +13,7 @@ app.use(cors());
 
 app.use("/api/users", userRouter);
 app.use("/api/articles", articleRouter);
+// app.use("/api/:articleId", voteRouter);
 
 app.listen(3001, () => {
   console.log("Running on port 3001");

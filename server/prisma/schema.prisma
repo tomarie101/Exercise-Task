@@ -17,34 +17,32 @@ model User {
   id       Int       @id @default(autoincrement())
   name     String
   email    String    @unique
-  likes    Like[]
   articles Article[]
+  likes    Like[]
 }
 
 model Article {
-  id           Int      @id @default(autoincrement())
-  title        String
-  content      String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  authorId     Int
-  author       User     @relation(fields: [authorId], references: [id])
-  likes        Like[]   @relation("ArticleLikes")
-  dislikes     Like[]   @relation("ArticleDislikes")
-  likeCount    Int      @default(0)
-  dislikeCount Int      @default(0)
-  Like         Like[]
+  id            Int      @id @default(autoincrement())
+  title         String
+  content       String
+  authorId      Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  likes         Like[]
+  likesCount    Int      @default(0)
+  dislikesCount Int      @default(0)
+  author        User     @relation(fields: [authorId], references: [id])
 }
 
 model Like {
-  id        Int     @id @default(autoincrement())
-  articleId Int
+  id        Int      @id @default(autoincrement())
+  isLiked   Boolean
   userId    Int
-  isLike    Boolean @default(true)
-  article   Article @relation(fields: [articleId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
-  Article   Article @relation(fields: [articleId], references: [id])
-  Article   Article @relation(fields: [articleId], references: [id])
+  articleId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id])
 
-  @@unique([articleId, userId])
+  @@unique([userId, articleId])
 }

@@ -7,11 +7,13 @@ const prisma = new PrismaClient();
 // Get all articles
 router.get("/", async (req, res) => {
   try {
-    const articles = await prisma.article.findMany();
+    const articles = await prisma.article.findMany({
+      include: { likes: true, author: true },
+    });
     res.json(articles);
   } catch (error) {
     console.error("Error fetching articles:", error);
-    res.json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -21,36 +23,32 @@ router.get("/:id", async (req, res) => {
   try {
     const article = await prisma.article.findUnique({
       where: { id: parseInt(id) },
+      include: { likes: true, author: true },
     });
 
     if (!article) {
-      return res.json({ message: "Article not found" });
+      return res.status(404).json({ message: "Article not found" });
     }
 
     res.json(article);
   } catch (error) {
     console.error(`Error fetching article ${id}:`, error);
-    res.json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 // Create a new article
-router.post("/articles", async (req, res) => {
+router.post("/", async (req, res) => {
   const { title, content, authorId } = req.body;
-
   try {
-    const article = await prisma.article.create({
+    const newArticle = await prisma.article.create({
       data: {
         title,
         content,
-        author: {
-          connect: {
-            id: authorId,
-          },
-        },
+        author: { connect: { id: authorId } },
       },
     });
-    res.status(201).json(article);
+    res.status(201).json(newArticle);
   } catch (error) {
     console.error("Error creating article:", error);
     res.status(500).json({ error: "Error creating article" });
@@ -60,12 +58,12 @@ router.post("/articles", async (req, res) => {
 // Update an article by ID
 router.put("/:id", async (req, res) => {
   const articleId = parseInt(req.params.id);
-  const { title, content, author } = req.body;
+  const { title, content } = req.body;
 
   try {
     const updatedArticle = await prisma.article.update({
       where: { id: articleId },
-      data: { title, content, author },
+      data: { title, content },
     });
     res.json({
       message: "Article updated successfully",
@@ -73,7 +71,7 @@ router.put("/:id", async (req, res) => {
     });
   } catch (error) {
     console.error(`Error updating article ${articleId}:`, error);
-    res.json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -91,33 +89,85 @@ router.delete("/:id", async (req, res) => {
     });
   } catch (error) {
     console.error(`Error deleting article ${articleId}:`, error);
-    res.json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
-// Increment likes for an article
-router.post("/:id/like", async (req, res) => {
-  const articleId = parseInt(req.params.id);
-  const { userId } = req.body;
+
+// Search articles by title, author name, and date posted
+router.get("/search", async (req, res) => {
+  const { query } = req.query;
 
   try {
-    const like = await prisma.like.create({
-      data: {
-        articleId,
-        userId,
+    const articles = await prisma.article.findMany({
+      where: {
+        OR: [
+          { title: { contains: query } },
+          { author: { name: { contains: query } } },
+          {
+            createdAt: {
+              gte: new Date(query.toString()), // Adjust this based on your date format
+            },
+          },
+        ],
       },
+      include: { author: true, likes: true },
+    });
+    res.json(articles);
+  } catch (error) {
+    console.error("Error searching articles:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Vote on an article (thumbs up or thumbs down)
+router.post("/:id/vote", async (req, res) => {
+  const articleId = parseInt(req.params.id);
+  const { userId, isLiked } = req.body;
+
+  if (!userId || isLiked === undefined) {
+    return res
+      .status(400)
+      .json({ error: "Missing required fields: userId, isLiked" });
+  }
+
+  try {
+    const existingVote = await prisma.like.findUnique({
+      where: { userId_articleId: { userId, articleId } },
     });
 
-    const updatedArticle = await prisma.article.findUnique({
+    let vote;
+    if (existingVote) {
+      vote = await prisma.like.update({
+        where: { id: existingVote.id },
+        data: { isLiked },
+      });
+    } else {
+      vote = await prisma.like.create({
+        data: { userId, articleId, isLiked },
+      });
+    }
+
+    const article = await prisma.article.findUnique({
       where: { id: articleId },
       include: { likes: true },
     });
 
+    const likesCount =
+      article?.likes.filter((like) => like.isLiked).length || 0;
+    const dislikesCount =
+      article?.likes.filter((like) => !like.isLiked).length || 0;
+
+    await prisma.article.update({
+      where: { id: articleId },
+      data: { likesCount, dislikesCount },
+    });
+
     res.json({
-      message: "Article liked successfully",
-      article: updatedArticle,
+      message: `Vote registered successfully`,
+      vote,
     });
   } catch (error) {
-    console.error(`Error liking article ${articleId}:`, error);
+    console.error(`Error voting on article ${articleId}:`, error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

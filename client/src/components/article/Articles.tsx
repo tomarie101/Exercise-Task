@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Pagination from "./Pagination";
-import ArticleLikes from "./ArticleLikes";
+import ArticleVoting from "./ArticleVoting";
 
 type Article = {
   id: number;
   title: string;
   content: string;
-  author: string;
+  authorId: number;
   createdAt: string;
   updatedAt: string;
-  likes: number;
+  likesCount: number;
+  dislikesCount: number;
 };
 
 function Articles() {
@@ -18,15 +19,12 @@ function Articles() {
   const [newArticle, setNewArticle] = useState({
     title: "",
     content: "",
-    author: "",
-    likes: 0, // Initialize likes with a default value
+    authorId: 0,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(6);
-
-  const { handleLike } = ArticleLikes();
 
   useEffect(() => {
     axios
@@ -71,7 +69,7 @@ function Articles() {
     } else {
       handleCreate(newArticle);
     }
-    setNewArticle({ title: "", content: "", author: "", likes: 0 });
+    setNewArticle({ title: "", content: "", authorId: 0 });
     setIsModalOpen(false);
     setEditingArticle(null);
   };
@@ -83,11 +81,10 @@ function Articles() {
       setNewArticle({
         title: article.title,
         content: article.content,
-        author: article.author,
-        likes: article.likes,
+        authorId: article.authorId,
       });
     } else {
-      setNewArticle({ title: "", content: "", author: "", likes: 0 });
+      setNewArticle({ title: "", content: "", authorId: 0 });
       setEditingArticle(null);
     }
   };
@@ -108,6 +105,7 @@ function Articles() {
       })
       .catch((error) => console.error("Error deleting article:", error));
   };
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-4">
@@ -127,9 +125,6 @@ function Articles() {
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-                  {article.author}
-                </span>
                 <span className="text-gray-500 text-sm">
                   {new Date(article.updatedAt).toLocaleString()}
                 </span>
@@ -156,14 +151,7 @@ function Articles() {
                     Delete
                   </button>
                 </div>
-                <div>
-                  <button
-                    onClick={() => handleLike(article.id, setArticles)}
-                    className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded"
-                  >
-                    Like ({article.likes})
-                  </button>
-                </div>
+                <ArticleVoting article={article} />
               </div>
             </div>
           </div>
@@ -205,28 +193,31 @@ function Articles() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700">Author</label>
+                <label className="block text-gray-700">Author ID</label>
                 <input
-                  type="text"
-                  name="author"
-                  value={newArticle.author}
+                  type="number"
+                  name="authorId"
+                  value={newArticle.authorId}
                   onChange={(e) =>
-                    setNewArticle({ ...newArticle, author: e.target.value })
+                    setNewArticle({
+                      ...newArticle,
+                      authorId: Number(e.target.value),
+                    })
                   }
                   className="mt-1 p-2 w-full border rounded"
                 />
               </div>
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded"
+                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 >
                   {editingArticle ? "Update" : "Create"}
                 </button>
