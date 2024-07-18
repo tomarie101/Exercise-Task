@@ -7,19 +7,23 @@ import {
   CardHeader,
   CardTitle,
 } from "../src/components/ui/card";
-import { Label } from "../src/components/ui/label";
-import { Input } from "../src/components/ui/input";
-import { Button } from "../src/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Login: React.FC = () => {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Login</CardDescription>
+        <CardTitle>Sign in</CardTitle>
+        <CardDescription>Register</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid w-ful gap-4 ">
+          <div className=" flex flex-col items-start space-y-2">
+            <Label htmlFor="email">UserName</Label>
+            <Input id="userName" type="text" placeholder="UserName" />
+          </div>
           <div className=" flex flex-col items-start space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" placeholder="m@example.com" />
@@ -31,7 +35,7 @@ const Login: React.FC = () => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="w-full">Login Account</Button>
+        <Button className="w-full">Create account</Button>
       </CardFooter>
     </Card>
   );

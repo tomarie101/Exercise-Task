@@ -14,35 +14,10 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String
-  email    String    @unique
-  articles Article[]
-  likes    Like[]
-}
-
-model Article {
-  id            Int      @id @default(autoincrement())
-  title         String
-  content       String
-  authorId      Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  likes         Like[]
-  likesCount    Int      @default(0)
-  dislikesCount Int      @default(0)
-  author        User     @relation(fields: [authorId], references: [id])
-}
-
-model Like {
   id        Int      @id @default(autoincrement())
-  isLiked   Boolean
-  userId    Int
-  articleId Int
+  userName  String
+  email     String   @unique
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-  article   Article  @relation(fields: [articleId], references: [id])
-
-  @@unique([userId, articleId])
 }

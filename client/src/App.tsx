@@ -1,4 +1,4 @@
-import Login from "../pages/Login";
+import Login from "../pages/Register";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "./components/mode-toggle";
 function App() {
