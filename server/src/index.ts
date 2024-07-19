@@ -1,19 +1,26 @@
 import express from "express";
-import { Router } from "express";
-import cors from "cors";
-import login from "./routes/auth";
-import register from "./routes/auth";
 import { PrismaClient } from "@prisma/client";
+import cors from "cors";
+import bodyParser from "body-parser";
+import authRoutes from "./routes/auth";
+import userRoutes from "./routes/user"; // Assuming you have a separate file for user routes
 
 const app = express();
 const port = 3000;
-const route: Router = Router();
-app.use(cors());
+
+app.use(
+  cors({
+    origin: true, // Allow all origins
+    credentials: true, // Allow cookies to be sent and received
+  })
+);
+
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/auth", login);
-app.use("/api/auth", register);
+app.use("/api/auth", authRoutes); // Use auth routes
+app.use("/api/users", userRoutes); // Use user routes
 
 export const prismaClient = new PrismaClient({
   log: ["query"],

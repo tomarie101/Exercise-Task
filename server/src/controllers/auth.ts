@@ -4,8 +4,8 @@ import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
 const router = express.Router();
-
 const prisma = new PrismaClient();
+
 //Register
 export const register = async (req: Request, res: Response) => {
   console.log(req.body);
@@ -27,17 +27,21 @@ export const register = async (req: Request, res: Response) => {
       password: await bcrypt.hash(password, 10),
     },
   });
-  res.json({ data: user, message: "User created successfully" });
+  res.json({
+    message: "User registered successfully",
+    data: { userName, email },
+  });
 };
 
 //Login
 export const login = async (req: Request, res: Response) => {
-  console.log({ message: "Login successful" });
   const { email, password } = req.body;
+  console.log(email, password);
   if (!email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please provide the correct email and password" });
+    return res.json({
+      message: "Please provide the correct email and password",
+      status: 400,
+    });
   }
 
   const user = await prisma.user.findUnique({
@@ -47,16 +51,16 @@ export const login = async (req: Request, res: Response) => {
   });
 
   if (!user) {
-    return res.status(400).json({ message: "Invalid email credentials" });
+    return res.json({ message: "Invalid email credentials" });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    return res.status(400).json({ message: "Invalid credentials" });
+    return res.json({ message: "Invalid credentials" });
   }
 
-  res.json({ message: "Login successful" });
+  res.json({ message: "Login successfully", status: 200 });
 };
 
 export default router;
