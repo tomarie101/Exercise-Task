@@ -11,6 +11,17 @@ export const getUsers = async (req: Request, res: Response) => {
   res.json(users);
 };
 
+// get user by id
+export const getUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = await prisma.user.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  });
+  res.json(user);
+};
+
 // edit user by id
 export const editUser = async (req: Request, res: Response) => {
   const { id } = req.params;
