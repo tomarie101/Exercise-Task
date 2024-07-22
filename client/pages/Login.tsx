@@ -33,7 +33,7 @@ const Login: React.FC = () => {
         console.log(res.data);
         setEmail("");
         setPassword("");
-        navigate("/");
+        navigate("/articles");
       } else {
         alert("res.data.message");
       }

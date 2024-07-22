@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
   const [userName, setUserName] = React.useState("");
@@ -21,6 +22,8 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
   const [successMessage, setSuccessMessage] = React.useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -43,10 +46,39 @@ const Register: React.FC = () => {
       setPassword("");
       setConfirmPassword("");
       setErrorMessage("");
+      navigate("/articles");
     } catch (error) {
       console.error("Failed to submit :", error);
     }
   };
+  // to check the userName if its exists or not
+  //try {
+  //   const res = await axios.post("http://localhost:3000/api/auth/register", {
+  //     email,
+  //     userName,
+  //     password,
+  //     confirmPassword,
+  //   });
+  //   console.log(res.data);
+
+  //   if (res.data.status === 409) { // Handle user already exists
+  //     setErrorMessage("This email or username is already in use.");
+  //   } else if (res.data.status !== 200) {
+  //     setErrorMessage(res.data.message);
+  //   } else {
+  //     setSuccessMessage("User registered successfully");
+  //     navigate("/articles");
+  //     setUserName("");
+  //     setEmail("");
+  //     setPassword("");
+  //     setConfirmPassword("");
+  //     setErrorMessage("");
+  //   }
+  // } catch (error) {
+  //   console.error("Failed to submit :", error);
+  //   setErrorMessage("An error occurred. Please try again.");
+  // }
+  // };
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
