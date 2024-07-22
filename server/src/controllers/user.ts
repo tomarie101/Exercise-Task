@@ -5,6 +5,23 @@ import { PrismaClient } from "@prisma/client";
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// create a new user
+export const createUser = async (req: Request, res: Response) => {
+  const { email, userName, password } = req.body;
+  try {
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        userName,
+        password,
+      },
+    });
+    res.json(newUser);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to create user" });
+  }
+};
+
 // get all users
 export const getUsers = async (req: Request, res: Response) => {
   const users = await prisma.user.findMany();
