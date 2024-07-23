@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import {
   ResizableHandle,
@@ -17,7 +18,6 @@ import AddArticleForm from "../src/components/articles/AddArticleForm";
 import EditArticleForm from "../src/components/articles/EditArticleForm";
 
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface Article {
@@ -91,7 +91,10 @@ const Article = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setSelectedArticle(article)}>
+                  <DropdownMenuItem onClick={() => handleSubmit(article)}>
+                    Add Article
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleEditArticle(article)}>
                     Edit Article
                   </DropdownMenuItem>
                   <DropdownMenuItem

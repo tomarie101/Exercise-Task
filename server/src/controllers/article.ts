@@ -6,11 +6,18 @@ const router = express.Router();
 
 const prisma = new PrismaClient();
 
-// Create article
 export const createArticle = async (req: Request, res: Response) => {
   const { title, content, thumbnail, authorId } = req.body;
 
+  console.log("Received request to create article:", {
+    title,
+    content,
+    thumbnail,
+    authorId,
+  }); // Log received data
+
   if (!title || !content || !thumbnail || !authorId) {
+    console.log("Error: Missing required fields");
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -23,10 +30,11 @@ export const createArticle = async (req: Request, res: Response) => {
         authorId,
       },
     });
+    console.log("Article created successfully:", newArticle);
     res.json(newArticle);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: "Failed to create article" });
+    console.error("Error creating article:", error);
+    res.status(500).json({ error: "Failed to create article" });
   }
 };
 

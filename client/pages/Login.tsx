@@ -1,4 +1,6 @@
 import React from "react";
+import { useRecoilState } from "recoil";
+import { userState } from "../src/components/userState";
 import {
   Card,
   CardContent,
@@ -18,8 +20,8 @@ import { useNavigate } from "react-router-dom";
 const Login: React.FC = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-
   const navigate = useNavigate();
+  const [user, setUser] = useRecoilState(userState);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,15 +32,22 @@ const Login: React.FC = () => {
         password,
       });
       if (res.data.status === 200) {
-        console.log(res.data);
+        console.log(res.data.user);
+
+        setUser({
+          userName: res.data.user.userName,
+          email: res.data.user.email,
+          id: res.data.user.id,
+        });
+
         setEmail("");
         setPassword("");
         navigate("/articles");
       } else {
-        alert("res.data.message");
+        alert(res.data.message);
       }
     } catch (error) {
-      console.error("Failed to submit: ");
+      console.error("Failed to submit: ", error);
     }
   };
 

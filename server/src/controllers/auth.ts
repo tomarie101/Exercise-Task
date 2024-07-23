@@ -60,7 +60,7 @@ export const login = async (req: Request, res: Response) => {
     return res.json({ message: "Invalid credentials" });
   }
 
-  res.json({ message: "Login successfully", status: 200 });
+  res.json({ message: "Login successfully", user, status: 200 });
 };
 
 export default router;

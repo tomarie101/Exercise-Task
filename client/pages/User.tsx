@@ -22,7 +22,7 @@ import axios from "axios";
 
 // Define types for user data
 interface User {
-  id: number;
+  id: number | null; // Corrected type
   userName: string;
   email: string;
   password: string; // Corrected type
