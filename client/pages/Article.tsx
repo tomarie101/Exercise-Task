@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import {
   ResizableHandle,
@@ -13,12 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import AddArticleForm from "../src/components/articles/AddArticleForm";
 import EditArticleForm from "../src/components/articles/EditArticleForm";
-
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface Article {
   id: number;
@@ -28,22 +27,43 @@ interface Article {
 }
 
 const Article = () => {
-  const [data, setData] = useState<Article[]>([]);
+  const [data, setData] = useState<Article[]>(() => {
+    const storedArticle = localStorage.getItem("articles");
+    return storedArticle ? JSON.parse(storedArticle) : [];
+  });
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [isAddArticleDialogOpen, setIsAddArticleDialogOpen] = useState(false);
+  const [isEditArticleDialogOpen, setIsEditArticleDialogOpen] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("articles", JSON.stringify(data));
+  }, [data]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/articles");
       setData(response.data);
+      localStorage.setItem("articles", JSON.stringify(response.data));
     } catch (error) {
       console.error("Failed to fetch articles: ", error);
     }
   };
 
+  const handleAddArticle = async () => {
+    await fetchData(); // Refresh the articles list
+    setIsAddArticleDialogOpen(false); // Close the dialog
+  };
+
   const handleDeleteArticle = async (id: number) => {
     try {
       await axios.delete(`http://localhost:3000/api/articles/${id}`);
-      setData(data.filter((article) => article.id !== id));
+      const updatedData = data.filter((article) => article.id !== id);
+      setData(updatedData);
+      localStorage.setItem("articles", JSON.stringify(updatedData));
     } catch (error) {
       console.error("Failed to delete article: ", error);
     }
@@ -55,20 +75,35 @@ const Article = () => {
         `http://localhost:3000/api/articles/${updatedArticle.id}`,
         updatedArticle
       );
-      setData(
-        data.map((article) =>
-          article.id === updatedArticle.id ? response.data : article
-        )
+      const updatedData = data.map((article) =>
+        article.id === updatedArticle.id ? response.data : article
       );
+      setData(updatedData);
+      localStorage.setItem("articles", JSON.stringify(updatedData));
       setSelectedArticle(null);
+      setIsEditArticleDialogOpen(false);
     } catch (error) {
       console.error("Failed to update article: ", error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const showAddArticleDialog = () => {
+    setIsAddArticleDialogOpen(true);
+  };
+
+  const hideAddArticleDialog = () => {
+    setIsAddArticleDialogOpen(false);
+  };
+
+  const showEditArticleDialog = (article: Article) => {
+    setSelectedArticle(article);
+    setIsEditArticleDialogOpen(true);
+  };
+
+  const hideEditArticleDialog = () => {
+    setSelectedArticle(null);
+    setIsEditArticleDialogOpen(false);
+  };
 
   return (
     <div className="relative min-h-screen flex flex-col items-center gap-4 mt-8">
@@ -78,7 +113,7 @@ const Article = () => {
           direction="vertical"
           className="min-h-[300px] max-w-4xl w-full rounded-lg border mb-4"
         >
-          <ResizablePanel defaultSize={30}>
+          <ResizablePanel defaultSize={50}>
             <div className="flex h-full items-center justify-center p-6 bg-gray-100">
               <h2 className="font-semibold">{article.title}</h2>
               <DropdownMenu>
@@ -91,10 +126,12 @@ const Article = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleSubmit(article)}>
+                  <DropdownMenuItem onClick={showAddArticleDialog}>
                     Add Article
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleEditArticle(article)}>
+                  <DropdownMenuItem
+                    onClick={() => showEditArticleDialog(article)}
+                  >
                     Edit Article
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -107,7 +144,7 @@ const Article = () => {
             </div>
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel defaultSize={70}>
+          <ResizablePanel defaultSize={100}>
             <div className="flex flex-col h-full items-start p-6 bg-gray-50">
               <img
                 src={article.thumbnail}
@@ -119,13 +156,35 @@ const Article = () => {
           </ResizablePanel>
         </ResizablePanelGroup>
       ))}
-      <AddArticleForm onAddArticle={fetchData} />
-      {selectedArticle && (
-        <EditArticleForm
-          article={selectedArticle}
-          onEditArticle={handleEditArticle}
-        />
-      )}
+
+      {/* Add Article Dialog */}
+      <Dialog
+        open={isAddArticleDialogOpen}
+        onOpenChange={setIsAddArticleDialogOpen}
+      >
+        <DialogContent>
+          <AddArticleForm
+            onAddArticle={handleAddArticle}
+            onClose={hideAddArticleDialog}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Article Dialog */}
+      <Dialog
+        open={isEditArticleDialogOpen}
+        onOpenChange={setIsEditArticleDialogOpen}
+      >
+        <DialogContent>
+          {selectedArticle && (
+            <EditArticleForm
+              article={selectedArticle}
+              onEditArticle={handleEditArticle}
+              onClose={hideEditArticleDialog}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
