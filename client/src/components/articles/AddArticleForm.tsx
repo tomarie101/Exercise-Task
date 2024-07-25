@@ -56,7 +56,7 @@ const AddArticleForm: React.FC<AddArticleFormProps> = ({
     <DialogContent>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-2xl p-4 bg-white rounded-lg shadow-md"
+        className="w-full p-4 bg-white rounded-lg shadow-md"
       >
         <h2 className="text-2xl font-bold mb-4">Add a New Article</h2>
         <div className="mb-4">
@@ -64,6 +64,7 @@ const AddArticleForm: React.FC<AddArticleFormProps> = ({
             Title
           </label>
           <Input
+            className="h-12"
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -74,16 +75,18 @@ const AddArticleForm: React.FC<AddArticleFormProps> = ({
             Thumbnail URL
           </label>
           <Input
+            className="h-12"
             id="thumbnail"
             value={thumbnail}
             onChange={(e) => setThumbnail(e.target.value)}
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="content" className="block text-gray-700">
+          <label htmlFor="content" className="block text-gray-700 ">
             Content
           </label>
           <Textarea
+            className="h-80"
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}

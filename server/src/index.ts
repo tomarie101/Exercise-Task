@@ -5,7 +5,9 @@ import bodyParser from "body-parser";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import articleRoutes from "./routes/article";
-import likeRoutes from "./routes/like";
+import createVotes from "./routes/vote";
+import searchArticles from "./routes/searching";
+import { create } from "domain";
 
 const app = express();
 const port = 3000;
@@ -24,7 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes); // Use auth routes
 app.use("/api/users", userRoutes); // Use user routes
 app.use("/api/articles", articleRoutes); // Use article routes
-app.use("/api/reaction", likeRoutes); // Use like routes
+app.use("/api/articles", createVotes); // Use vote routes
+app.use("/api/articles", searchArticles); // Use search routes
 
 export const prismaClient = new PrismaClient({
   log: ["query"],

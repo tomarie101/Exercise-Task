@@ -42,7 +42,7 @@ const EditArticleForm = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-2xl p-4 bg-white rounded-lg shadow-md"
+      className="w-full p-4 bg-white rounded-lg shadow-md"
     >
       <h2 className="text-2xl font-bold mb-4">Edit Article</h2>
       <div className="mb-4">
@@ -50,6 +50,7 @@ const EditArticleForm = ({
           Title
         </label>
         <Input
+          className="h-12"
           id="title"
           name="title"
           value={updatedArticle.title}
@@ -61,6 +62,7 @@ const EditArticleForm = ({
           Thumbnail URL
         </label>
         <Input
+          className="h-12"
           id="thumbnail"
           name="thumbnail"
           value={updatedArticle.thumbnail}
@@ -72,6 +74,7 @@ const EditArticleForm = ({
           Content
         </label>
         <Textarea
+          className="h-80"
           id="content"
           name="content"
           value={updatedArticle.content}

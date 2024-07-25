@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import {
   Card,
   CardContent,
@@ -7,6 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../src/components/ui/card";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -54,72 +64,102 @@ const Register: React.FC = () => {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="absolute top-2 right-2">
-        <ModeToggle />
-      </div>
-      <div className="grid grid-cols-1 justify-content-center">
-        <div className="flex items-center h-screen justify-center">
-          <Card className="w-[350px]">
-            <CardHeader>
-              <CardTitle>Sign in</CardTitle>
-              <CardDescription>Register</CardDescription>
-            </CardHeader>
-            <form onSubmit={handleSubmit}>
-              <CardContent>
-                <div className="grid w-ful gap-4 ">
-                  <div className=" flex flex-col items-start space-y-2">
-                    <Label htmlFor="email">UserName</Label>
-                    <Input
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                      id="userName"
-                      type="text"
-                      placeholder="UserName"
-                    />
+      <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
+        <div className="absolute top-2 right-2">
+          <ModeToggle />
+        </div>
+        <div className="flex items-center space-x-4 ">
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>
+                  <img src="/menu-icon1.png" alt="Menu" className="h-6 w-6" />
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="flex flex-col bg-gray-200 text-black">
+                  <NavigationMenuLink asChild>
+                    <Link to="/users">
+                      <span>Users</span>
+                    </Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link to="/logout">
+                      <span>Logout</span>
+                    </Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link to="/">
+                      <span>Home</span>
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+        <div className="grid grid-cols-1 justify-content-center">
+          <div className="flex items-center h-screen justify-center">
+            <Card className="w-[350px]">
+              <CardHeader>
+                <CardTitle>Sign in</CardTitle>
+                <CardDescription>Register</CardDescription>
+              </CardHeader>
+              <form onSubmit={handleSubmit}>
+                <CardContent>
+                  <div className="grid w-full gap-4 ">
+                    <div className=" flex flex-col items-start space-y-2">
+                      <Label htmlFor="email">UserName</Label>
+                      <Input
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        id="userName"
+                        type="text"
+                        placeholder="UserName"
+                      />
+                    </div>
+                    <div className=" flex flex-col items-start space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        id="email"
+                        type="email"
+                        placeholder="m@example.com"
+                      />
+                    </div>
+                    <div className="flex flex-col items-start space-y-2">
+                      <Label htmlFor="password">Password</Label>
+                      <Input
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        id="password"
+                        type="password"
+                      />
+                    </div>
+                    <div className="flex flex-col items-start space-y-2">
+                      <Label htmlFor="password">Confirm Password</Label>
+                      <Input
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        id="confirmPassword"
+                        type="password"
+                      />
+                    </div>
+                    {errorMessage && (
+                      <p className="text-red-500">{errorMessage}</p>
+                    )}
+                    {successMessage && (
+                      <p className="text-green-500">{successMessage}</p>
+                    )}
                   </div>
-                  <div className=" flex flex-col items-start space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                    />
-                  </div>
-                  <div className="flex flex-col items-start space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      id="password"
-                      type="password"
-                    />
-                  </div>
-                  <div className="flex flex-col items-start space-y-2">
-                    <Label htmlFor="password">Confirm Password</Label>
-                    <Input
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      id="confirmPassword"
-                      type="password"
-                    />
-                  </div>
-                  {errorMessage && (
-                    <p className="text-red-500">{errorMessage}</p>
-                  )}
-                  {successMessage && (
-                    <p className="text-green-500">{successMessage}</p>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full" type="submit">
-                  Create account
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full" type="submit">
+                    Create account
+                  </Button>
+                </CardFooter>
+              </form>
+            </Card>
+          </div>
         </div>
       </div>
     </ThemeProvider>

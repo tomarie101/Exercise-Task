@@ -1,14 +1,14 @@
-import { Router } from "express";
-import {
-  addReactions,
-  deleteReactions,
-  getReactions,
-} from "../controllers/like";
+// import { Router } from "express";
+// import {
+//   addReactions,
+//   deleteReactions,
+//   getReactions,
+// } from "../controllers/like";
 
-const router = Router();
+// const router = Router();
 
-router.post("/:id", addReactions);
-router.delete("/:id", deleteReactions);
-router.get("/:id", getReactions);
+// router.post("/:id", addReactions);
+// router.delete("/:id", deleteReactions);
+// router.get("/:id", getReactions);
 
-export default router;
+// export default router;
