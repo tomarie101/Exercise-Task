@@ -122,7 +122,7 @@ const Article: React.FC<ArticleProps> = () => {
     setIsEditArticleDialogOpen(false);
   };
 
-  const handleViewArticle = (id: number) => {
+  const handleSelectArticle = (id: number) => {
     navigate(`/article/${id}`);
   };
 
@@ -150,7 +150,11 @@ const Article: React.FC<ArticleProps> = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center gap-4 mt-8">
-      <SearchArticles onSearch={handleSearch} />
+      <SearchArticles
+        articles={data}
+        onSearch={handleSearch}
+        onSelectArticle={handleSelectArticle}
+      />
       {currentItems.map((article) => (
         <ResizablePanelGroup
           key={article.id}
@@ -171,7 +175,7 @@ const Article: React.FC<ArticleProps> = () => {
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={() => handleViewArticle(article.id)}
+                      onClick={() => handleSelectArticle(article.id)}
                     >
                       View Article
                     </DropdownMenuItem>
