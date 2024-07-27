@@ -9,6 +9,7 @@ import Home from "../pages/Home";
 import { RecoilRoot } from "recoil";
 import Article from "../pages/Article";
 import ArticleDetail from "../pages/ArticleDetail";
+import Logout from "../pages/Logout";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,11 @@ const router = createBrowserRouter([
   {
     path: "/Login",
     element: <Login />,
+  },
+
+  {
+    path: "/logout",
+    element: <Logout />,
   },
 
   {

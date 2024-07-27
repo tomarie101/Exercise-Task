@@ -81,7 +81,7 @@ const Login: React.FC = () => {
                     </Link>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <Link to="/logout">
+                    <Link to="/Login">
                       <span>Logout</span>
                     </Link>
                   </NavigationMenuLink>

@@ -39,7 +39,7 @@ const Home: React.FC = () => {
         </div>
         <div>
           <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
-            <div className="flex items-center space-x-4 ">
+            <div className="flex items-center space-x-4  ">
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>

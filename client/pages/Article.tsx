@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { MoreHorizontal } from "lucide-react";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Link } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import AddArticleForm from "@/components/articles/AddArticleForm";
 import EditArticleForm from "@/components/articles/EditArticleForm";
 import { Button } from "@/components/ui/button";
@@ -149,7 +158,35 @@ const Article: React.FC<ArticleProps> = () => {
   );
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center gap-4 mt-8">
+    <div className="relative min-h-screen flex flex-col items-center gap-4 mt-3">
+      <div className="flex items-center space-x-4 absolute top-2 left-0">
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>
+                <img src="/menu-icon1.png" alt="Menu" className="h-6 w-6" />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="flex flex-col bg-gray-200 text-black">
+                <NavigationMenuLink asChild>
+                  <Link to="/users">
+                    <span>Users</span>
+                  </Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link to="/Login">
+                    <span>Logout</span>
+                  </Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link to="/">
+                    <span>Home</span>
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
       <SearchArticles
         articles={data}
         onSearch={handleSearch}
