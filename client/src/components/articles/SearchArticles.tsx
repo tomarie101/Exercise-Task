@@ -58,11 +58,11 @@ const SearchArticles: React.FC<SearchArticlesProps> = ({
       />
       <Button onClick={handleSearch}>Search</Button>
       {showDropdown && filteredArticles.length > 0 && (
-        <ul className="absolute top-full mt-2 w-full bg-white border border-gray-300 shadow-lg max-h-60 overflow-auto">
+        <ul className="absolute top-0 left-0 mt-12 w-full bg-white border border-gray-300 shadow-lg max-h-60 overflow-auto z-50 ">
           {filteredArticles.map((article) => (
             <li
               key={article.id}
-              className="p-2 hover:bg-gray-200 cursor-pointer"
+              className="p-2 hover:bg-gray-500 cursor-pointer"
               onClick={() => handleSelect(article.id)}
             >
               {article.title}

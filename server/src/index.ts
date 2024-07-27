@@ -6,7 +6,6 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import articleRoutes from "./routes/article";
 import addReactions from "./routes/like";
-import searchArticles from "./routes/search";
 import { create } from "domain";
 
 const app = express();
@@ -27,7 +26,6 @@ app.use("/api/auth", authRoutes); // Use auth routes
 app.use("/api/users", userRoutes); // Use user routes
 app.use("/api/articles", articleRoutes); // Use article routes
 app.use("/api/articles", addReactions); // Use vote routes
-app.use("/api/articles", searchArticles); // Use search routes
 
 export const prismaClient = new PrismaClient({
   log: ["query"],
