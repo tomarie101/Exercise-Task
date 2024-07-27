@@ -1,57 +1,63 @@
-// import { Request, Response } from "express";
-// import { PrismaClient } from "@prisma/client";
-// import express from "express";
+import express, { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
 
-// const router = express.Router();
-// const prisma = new PrismaClient();
+const router = express.Router();
+const prisma = new PrismaClient();
 
-// const isValidDate = (dateString: string) => {
-//   const regex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
-//   return dateString.match(regex) !== null;
-// };
+// Utility function to validate and parse date
+const parseDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime()) ? date : null;
+};
 
-// export const searchArticles = async (req: Request, res: Response) => {
-//   const { query } = req.query;
-//   console.log("Received request to search articles:", query);
+// Utility function to check if the query is a valid date
+const isValidDateQuery = (query: string) => {
+  return !isNaN(Date.parse(query));
+};
 
-//   if (!query || typeof query !== "string") {
-//     return res
-//       .status(400)
-//       .json({ error: "Query is required and must be a string" });
-//   }
+export const searchArticles = async (req: Request, res: Response) => {
+  const { query } = req.query; // Single query parameter
 
-//   const lowerCaseQuery = query.toLowerCase();
+  if (!query || typeof query !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Query parameter is required and must be a string" });
+  }
 
-//   try {
-//     const articles = await prisma.article.findMany({
-//       where: {
-//         OR: [
-//           { title: { contains: lowerCaseQuery } },
-//           {
-//             author: {
-//               userName: { contains: lowerCaseQuery },
-//             },
-//           },
-//           isValidDate(lowerCaseQuery)
-//             ? {
-//                 AND: [
-//                   { createdAt: { gte: new Date(lowerCaseQuery) } },
-//                   { createdAt: { lte: new Date(lowerCaseQuery) } },
-//                 ],
-//               }
-//             : {},
-//         ],
-//       },
-//       include: {
-//         author: true,
-//       },
-//     });
+  try {
+    const where: any = {};
 
-//     res.json(articles);
-//   } catch (error) {
-//     console.error("Error searching articles:", error);
-//     res.status(500).json({ error: "Failed to search articles" });
-//   }
-// };
+    // Determine if the query is a date or a text search
+    if (isValidDateQuery(query)) {
+      const startDate = parseDate(query);
+      if (startDate) {
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 1); // End of the day
 
-// export default router;
+        where.createdAt = { gte: startDate, lt: endDate };
+      }
+    } else {
+      // Handle title and author searches
+      where.OR = [
+        { title: { contains: query, mode: "insensitive" } },
+        {
+          author: {
+            userName: { contains: query, mode: "insensitive" },
+          },
+        },
+      ];
+    }
+
+    const articles = await prisma.article.findMany({
+      where,
+      include: { author: true },
+    });
+
+    res.json(articles);
+  } catch (error) {
+    console.error("Error in search:", error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+  }
+};
+
+export default router;

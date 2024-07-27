@@ -8,3 +8,4 @@ export const userState = atom({
     email: "",
   },
 });
+export default userState;

@@ -6,8 +6,9 @@ import Register from "../pages/Register";
 import Login from "../pages/Login";
 import User from "../pages/User";
 import Home from "../pages/Home";
-import Article from "../pages/Article";
 import { RecoilRoot } from "recoil";
+import Article from "../pages/Article";
+import ArticleDetail from "../pages/ArticleDetail";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
   {
     path: "/articles",
     element: <Article />,
+  },
+
+  {
+    path: "/article/:id",
+    element: <ArticleDetail />,
   },
 ]);
 

@@ -67,7 +67,7 @@ const Login: React.FC = () => {
         <div className="absolute top-2 right-2">
           <ModeToggle />
         </div>
-        <div className="flex items-center space-x-4 ">
+        <div className="flex items-center space-x-4 absolute">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>

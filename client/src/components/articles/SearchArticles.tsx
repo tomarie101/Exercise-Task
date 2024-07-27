@@ -1,60 +1,27 @@
-import { useState } from "react";
-import axios from "axios";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Article from "pages/Article";
+import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 interface SearchArticlesProps {
-  onSearchResults: (results: Article[]) => void;
-  onError: (message: string) => void;
+  onSearch: (query: string) => void;
 }
 
-const SearchArticles = ({ onSearchResults, onError }: SearchArticlesProps) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+const SearchArticles: React.FC<SearchArticlesProps> = ({ onSearch }) => {
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = async () => {
-    setLoading(true);
-    try {
-      const encodedSearchTerm = encodeURIComponent(searchTerm);
-      const response = await axios.get(
-        `http://localhost:3000/api/articles/search`,
-        {
-          params: { query: encodedSearchTerm },
-        }
-      );
-
-      if (response.data.length === 0) {
-        onError("No articles found");
-        onSearchResults([]);
-      } else {
-        onError(""); // Clear any previous error message
-        onSearchResults(response.data);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.error("Error response data:", error.response.data);
-      } else {
-        console.error("Error:", error);
-      }
-      onError("Failed to search articles");
-      onSearchResults([]);
-    } finally {
-      setLoading(false);
-    }
+  const handleSearch = () => {
+    onSearch(searchQuery);
   };
 
   return (
     <div className="flex">
       <Input
         type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search articles..."
+        placeholder="Search Articles"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
-      <Button onClick={handleSearch} disabled={loading}>
-        {loading ? "Searching..." : "Search"}
-      </Button>
+      <Button onClick={handleSearch}>Search</Button>
     </div>
   );
 };
