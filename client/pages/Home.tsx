@@ -84,8 +84,20 @@ const Home: React.FC = () => {
               </Link>
             </div>
           </nav>
-
-          <div className="flex justify-center items-center mt-44">
+          <div className="flex justify-center items-center mt-14">
+            <div className="text-center my-8 p-4">
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md p-6 inline-block">
+                <h1 className="text-2xl font-bold mb-2 font-mono">
+                  Welcome to ArticleHub
+                </h1>
+                <p className="text-xl font-sans">
+                  Share Your Insights, Explore New Perspectives, and Refine Your
+                  Craft— All in One Place. Join ArticleHub.com Today!
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-center items-center mt-10">
             <Carousel
               opts={{
                 align: "start",
@@ -103,7 +115,7 @@ const Home: React.FC = () => {
                         <img
                           src={src}
                           alt={`Slide ${index + 1}`}
-                          className="rounded-lg mb-4 w-full h-80 object-cover"
+                          className="rounded-lg mb-4 w-full h-80"
                         />
                       </CardContent>
                     </div>
