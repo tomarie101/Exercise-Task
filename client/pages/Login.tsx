@@ -49,7 +49,7 @@ const Login: React.FC = () => {
           email: res.data.user.email,
           id: res.data.user.id,
         });
-
+        console.log("Login");
         setEmail("");
         setPassword("");
         navigate("/articles");

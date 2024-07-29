@@ -19,13 +19,22 @@ const AddArticleForm: React.FC<AddArticleFormProps> = ({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [thumbnail, setThumbnail] = useState("");
+  const [error, setError] = useState(""); // Add error state
 
   const user = useRecoilValue(userState);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!user) {
-      alert("You must be logged in to add an article.");
+
+    // Check if the user is logged in
+    if (!user || !user.id) {
+      setError("You must be logged in to add an article.");
+      return;
+    }
+
+    // Check if all required fields are filled
+    if (!title || !content || !thumbnail) {
+      setError("All fields are required.");
       return;
     }
 
@@ -46,8 +55,10 @@ const AddArticleForm: React.FC<AddArticleFormProps> = ({
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Axios error:", error.response?.data || error.message);
+        setError("Failed to add article. Please try again.");
       } else {
         console.error("Unexpected error:", error);
+        setError("An unexpected error occurred.");
       }
     }
   };
@@ -59,6 +70,7 @@ const AddArticleForm: React.FC<AddArticleFormProps> = ({
         className="w-full p-4 bg-white rounded-lg shadow-md"
       >
         <h2 className="text-2xl font-bold mb-4">Add a New Article</h2>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="mb-4">
           <label htmlFor="title" className="block text-gray-700">
             Title
